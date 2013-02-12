@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+ARGF.each_line do |line|
+  if line =~ /(.*".*)\#\{(.+)\}(.*".*)/
+    if $3[0..0] == '"'
+      puts %{#$1"+#$2 #{$3[1..-1]}}
+    else
+      puts %{#$1"+#$2+"#$3"}
+    end
+  else
+    puts line
+  end
+end

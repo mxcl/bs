@@ -1,0 +1,56 @@
+router.add(function(artist, album, track) {
+    var $el = <div id="bandrack">;
+    var $s1 = <section class="glamourshot">;
+    var $s2 = <section class="biography">;
+    var $s3 = <section class="discography">;
+
+    $('#content').html($el);
+    $el << $s1 << $s2 << $s3;
+
+    rackit.ws.read("/artist/#{artist + 123}", function(info) {
+        info = _.defaults(info, {
+            bio: "A mysterious biography.",
+            genres: []
+        });
+
+        $s1 <<  <div class="glamourshot-about">
+                    <h2>#{info.name}
+                        <a class="hidden" href="http://musicbrainz.org/artist/#{mbaid}" target="_blank">mbaid:#{info.mbaid}</a>
+                        <a class="hidden" href="http://allmusic.com/artist/#{artist}" target="_blank">allmusic</a>
+                    </h2>
+                </div>
+                <div class="genres">
+                    #{info.genres.join(', ')}
+                </div>;
+
+        $s2.html(info.bio);
+    });
+
+    rackit.ws.read("/music/#{artist}", function(tapes) {
+        var views = tapes.map{ |tape| new TapeView(new Album(tape)).render() };
+        $s3 << (<ol> << views.pluck('el'));
+        views.invoke('fit');
+        views.invoke('resolve');
+
+        if (views.length > 5) // user can count less than that
+            $s3 << <p class="summary">#{views.length} Releases</p>;
+
+        $s1 << tapes.pluck('released').decadize().map{ |decade|
+            <img src='http://img.rackit.co/#{artist}/#{album}?#{decade}s' width=325>
+            <article>#{decade.prettyDecade()}s #{artist.deplus()}</article>;
+        }
+
+        var articles = $s1.find('article');
+        if (articles.length == 1) // looks dumb to title just one
+            articles.remove();
+    });
+}, [
+    '/music/:artist/:album/:track',
+    '/music/:artist/:album',
+    '/music/:artist?:album',
+    '/music/:artist'
+]);
+
+Fixnum.prototype.prettyDecade = function() {
+    return (this > 1919 && this < 2000) ? this % 100 : this;
+}
