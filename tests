@@ -1,0 +1,25 @@
+#!/usr/bin/ruby -rubygems
+
+require 'test/unit'
+
+class String
+  def to_js
+    ENV['BS'] = self
+    `echo "$BS" | ./bsc`.chomp
+  end
+end
+
+class BullTests < Test::Unit::TestCase
+  def test_double_quote_substitution
+    assert_equal %q{"foo #{bar} foo"}.to_js, '"foo " + bar + " foo"'
+  end
+
+  def test_single_quote_substitution
+    s = %q{'foo #{bar} foo'}
+    assert_equal s.to_js, s
+  end
+
+  def test_subst_with_single_quotes_inside
+    assert_equal %q{"foo #{'bar'} foo"}.to_js, %q{"foo " + 'bar' + " foo"}
+  end
+end
