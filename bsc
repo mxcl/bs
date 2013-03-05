@@ -1,12 +1,114 @@
 #!/usr/bin/ruby
-ARGF.each_line do |line|
-  if line =~ /(.*".*)\#\{(.+)\}(.*".*)/
-    if $3[0..0] == '"'
-      puts %{#$1"+#$2 #{$3[1..-1]}}
+# TODO test Ruby < 1.9
+
+
+$input = ARGF.read.freeze
+$i = 0
+
+
+######################################################################## utils
+def putc
+  Kernel.putc(c)
+ensure
+  $i += 1
+end
+
+def prev
+  j = $i - 1;
+  $input[j..j]
+end
+
+def peek
+  j = $i + 1;
+  $input[j..j]
+end
+
+def whitespace_reverse
+  begin
+    $i -= 1
+  end while c =~ /\s/
+end
+
+def whitespace_until_EOL #TODO is for loop more concise?
+  j = $i + 1
+  while j < $input.length
+    return true if $input[j..j] == "\n"
+    return false unless $input[j..j] =~ /\s/
+    j += 1
+  end
+end
+
+def c
+  $input[$i..$i]
+end
+
+class String
+  def substitutize sep = '"'
+    self.gsub(/\#\{(.*?)\}/, "#{sep} + \\1 + #{sep}")
+  end
+end
+
+
+################################################################### core logic
+def tokenize
+  while $i < $input.length
+    case c
+    when '/'
+      putc
+      while putc != "\n"; end if putc == '/'
+      while putc != '*' and peek != '/'; end if putc == '*'
+      next
+    when "'"
+      putc
+      while putc != "'" and prev != '\\'; end
+      next
+    when '"'
+      j = $i
+      $i += 1
+      $i += 1 until c == '"' and prev != '\\'
+      yield :string, $input[j..$i]
+    when '<'
+      if peek =~ /[a-zA-Z]/
+        opts = {:jQuerize => true}
+        j = $i
+        loop do
+          $i += 1
+          break if c == ';' and whitespace_until_EOL;
+          if c == '<' and peek == '<';
+            whitespace_reverse
+            break
+          end
+        end
+        yield :html, $input[j..$i], opts
+      else
+        print c
+      end
     else
-      puts %{#$1"+#$2+"#$3"}
+      print c
     end
-  else
-    puts line
+    $i += 1
+  end
+end
+
+
+#################################################################### main loop
+tokenize do |type, string, opts|
+  case type
+  when :string
+    print string.gsub(/#\{(.*?)\}/, '" + \1 + "')
+  when :html
+    comma_terminated = string.end_with? ';'
+    string = string.split(/(#\{.*?\})/).map do |part|
+      if part.start_with? '#'
+         %Q{' + #{part[2..-2]} + '} # substitute variables
+      else
+        part.gsub(%{'}, %{\\\\'})
+      end
+    end.join
+    string.chop!.gsub!(/\s*\n(\s*)/m, %Q{'+\n\\1'}) if comma_terminated
+    string = "'#{string}'"
+    string = "$(#{string})" if opts[:jQuerize]
+    string = "#{string};" if comma_terminated
+    print string
   end
 end

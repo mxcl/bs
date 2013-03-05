@@ -38,7 +38,7 @@ router.add(function(artist, album, track) {
         $s1 << tapes.pluck('released').decadize().map{ |decade|
             <img src='http://img.rackit.co/#{artist}/#{album}?#{decade}s' width=325>
             <article>#{decade.prettyDecade()}s #{artist.deplus()}</article>;
-        }
+        };
 
         var articles = $s1.find('article');
         if (articles.length == 1) // looks dumb to title just one
