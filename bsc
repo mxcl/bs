@@ -42,6 +42,12 @@ def c
   $input[$i..$i]
 end
 
+def seek s
+  until $input[$i..$i+s.length-1] == s or $i >= $input.length - s.length
+    $i += 1
+  end
+end
+
 class String
   def substitutize sep = '"'
     self.gsub(/\#\{(.*?)\}/, "#{sep} + \\1 + #{sep}")
@@ -65,8 +71,15 @@ def tokenize
     when '"'
       j = $i
       $i += 1
-      $i += 1 until c == '"' and prev != '\\'
-      yield :string, $input[j..$i]
+      if c == '"' and peek == '"'
+        $i += 2
+        begin seek('"""') end while prev == '\\'
+        $i += 2
+        yield :multi, $input[j..$i]
+      else
+        $i += 1 until c == '"' and prev != '\\'
+        yield :string, $input[j..$i]
+      end
     when '<'
       if peek =~ /[a-zA-Z]/
         opts = {:jQuerize => true}
@@ -90,21 +103,29 @@ def tokenize
   end
 end
 
+def subst string
+  string.split(/(#\{.*?\})/).map do |part|
+    if part.start_with? '#'
+       %Q{' + #{part[2..-2]} + '} # substitute variables
+    else
+      part.gsub(%{'}, %{\\\\'}) # escape quotes
+    end
+  end.join
+end
+
 
 #################################################################### main loop
 tokenize do |type, string, opts|
   case type
   when :string
     print string.gsub(/#\{(.*?)\}/, '" + \1 + "')
+  when :multi
+    string = string[3..-4] # remove surrounding triple quotes
+    string = string.gsub(/\s*\n(\s*)/m, %Q{\\n'+\n\\1'})
+    print %Q{'#{string}'}
   when :html
     comma_terminated = string.end_with? ';'
-    string = string.split(/(#\{.*?\})/).map do |part|
-      if part.start_with? '#'
-         %Q{' + #{part[2..-2]} + '} # substitute variables
-      else
-        part.gsub(%{'}, %{\\\\'})
-      end
-    end.join
+    string = subst(string)
     string.chop!.gsub!(/\s*\n(\s*)/m, %Q{'+\n\\1'}) if comma_terminated
     string = "'#{string}'"
     string = "$(#{string})" if opts[:jQuerize]

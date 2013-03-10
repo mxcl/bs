@@ -10,6 +10,10 @@ bullscripting you.
 
 The Bullscript compiler is also WAY simple. PLEASE fork and improve and make a JS version, it will not take you long!
 
+BS is designed to help you write JS that is easier to read. With convenience
+functionality to help you write better JS. BUT at the end of the day, you are
+still writing Javascript. Not something else.
+
 Still Pretty New
 ================
 It works, but you may have some trouble. It's pretty easy to try it though,
@@ -75,6 +79,11 @@ Use parenthesis to append at different levels in the DOM:
 ```js
 $bar << (<ol> << <li>#{foo} << <li>#{bar});
 ```
+
+TODO - Multiline Strings
+========================
+Using the """foo""" syntax
+
 
 HTML Blocks Caveats
 ===================

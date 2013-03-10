@@ -2,6 +2,8 @@
 
 require 'test/unit'
 
+Dir.chdir("#{__FILE__}/..")
+
 class String
   def to_js
     ENV['BS'] = self
@@ -14,12 +16,81 @@ class BullTests < Test::Unit::TestCase
     assert_equal %q{"foo #{bar} foo"}.to_js, '"foo " + bar + " foo"'
   end
 
+  # def test_brackets_in_subst
+  #   assert_equal %q{"foo #{bar + foo} foo"}.to_js, '"foo " + (bar + foo) + " foo"'
+  # end
+
   def test_single_quote_substitution
     s = %q{'foo #{bar} foo'}
     assert_equal s.to_js, s
   end
 
+  def test_multiline_strings
+    input = <<-end
+    """
+    Line one.
+    Line two.
+    Line three.
+    """
+    end
+    output = <<-end
+    '\\n'+
+    'Line one.\\n'+
+    'Line two.\\n'+
+    'Line three.\\n'+
+    ''
+    end
+    assert_equal input.to_js, output
+  end
+
+  def test_multiline_strings_with_subst
+    input = <<-end
+    """
+    Line one.
+    Line #{two}.
+    Line three.
+    """
+    end
+    output = <<-end
+    '\\n'+
+    'Line one.\\n'+
+    'Line ' + two + '.\\n'+
+    'Line three.\\n'+
+    ''
+    end
+    assert_equal input.to_js, output
+  end
+
+
   def test_subst_with_single_quotes_inside
     assert_equal %q{"foo #{'bar'} foo"}.to_js, %q{"foo " + 'bar' + " foo"}
   end
+
+  # def test_falsy_subst
+  #   assert_equal %q{"foo #{bar}n foo"}.to_js, %q{"foo " + (bar || '') + " foo"}
+  # end
+
+  # def test_URI_encoded_subst
+  #   assert_equal %q{"foo #{bar}x foo"}.to_js, %q{"foo " + encodeURIComponent(bar) + " foo"}
+  # end
+
+  # def test_misc1
+  #   input = <<-end
+  #   <style>
+  #     #content > ul {
+  #       -webkit-column-count: 5;
+  #       -webkit-column-break-before: always;
+  #     }
+  #   </style>;
+  #   end
+  #   output = <<-end
+  #   '<style> '+
+  #     '#content > ul { '+
+  #       '-webkit-column-count: 5; '+
+  #       '-webkit-column-break-before: always; '+
+  #     '} '+
+  #   '</style>';
+  #   end
+  #   assert_equal input.to_js, output
+  # end
 end
