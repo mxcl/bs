@@ -65,6 +65,32 @@ class BullTests < Test::Unit::TestCase
     assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + encodeURIComponent(bar) + " foo"}
   end
 
+  def test_html1
+    assert_equal %q{var a = <ol><li>;}.to_js, %q{var a = $('<ol><li>');}
+  end
+
+  def test_multiline_html
+    input = <<-end.to_js
+    var a = <ol>
+      <li>one
+      <li>two
+      <li>three
+    </ol>;
+    end
+    output = <<-end
+    var a = $('<ol>'+
+      '<li>one'+
+      '<li>two'+
+      '<li>three'+
+    '</ol>');
+    end
+    assert_equal input, output
+  end
+
+  # def test_html2
+  #   assert_equal %q{var a = <ol><li>#{foo};}.to_js, %q{var a = $('<ol><li>' + (foo) + '');}
+  # end
+
   # def test_misc1
   #   input = <<-end
   #   <style>
