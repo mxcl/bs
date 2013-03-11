@@ -52,6 +52,38 @@ How about automatic jQuerization?
 /*js*/ var $bar = $('<ol><li>foo</ol>');
 ```
 
+Multiline strings:
+
+```js
+  """Line one
+     Line two
+     Line three"""
+```
+
+Becomes:
+
+```js
+  "Line one\n"+
+     "Line two\n"+
+     "Line three"
+```
+
+Because we're generating HTML, we don't add the leading whitespace to the
+string on the extra lines. We do however add a trailing newline character.
+
+Fancy escaping:
+
+```js
+/*bs*/ "foo #n{bar} jee"
+/*js*/ "foo " + (bar || '') + " jee"
+```
+
+```js
+/*bs*/ "http://foo.com/#x{bar}/jee"
+/*js*/ "http://foo.com/" + encodeURIComponent(bar) + "/jee"
+```
+
+
 TODO - #{}x
 ===========
 Auto escape HTML:

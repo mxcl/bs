@@ -48,12 +48,6 @@ def seek s
   end
 end
 
-class String
-  def substitutize sep = '"'
-    self.gsub(/\#\{(.*?)\}/, "#{sep} + \\1 + #{sep}")
-  end
-end
-
 
 ################################################################### core logic
 def tokenize
@@ -103,30 +97,44 @@ def tokenize
   end
 end
 
-def subst string
-  string.split(/(#\{.*?\})/).map do |part|
-    if part.start_with? '#'
-       %Q{' + (#{part[2..-2]}) + '} # substitute variables
-    else
-      part.gsub(%{'}, %{\\\\'}) # escape quotes
+class String
+  def bsubst sep = '"'
+    self.gsub(/#([nx]?)\{(.*?)\}/) do
+      inner = case $1
+      when 'n'
+        "((#{$2}) || '')"
+      when 'x'
+        "encodeURIComponent(#{$2})"
+      else
+        "(#{$2})"
+      end
+      %Q{#{sep} + #{inner} + #{sep}}
     end
-  end.join
+  end
 end
-
 
 #################################################################### main loop
 tokenize do |type, string, opts|
   case type
   when :string
-    print string.gsub(/#\{(.*?)\}/, '" + (\1) + "')
+    print string.bsubst
   when :multi
     string = string[3..-4] # remove surrounding triple quotes
-    string = subst(string)
+    string = string.gsub("'", "\\'")
+    string = string.bsubst("'")
     string = string.gsub(/\s*\n(\s*)/m, %Q{\\n'+\n\\1'})
     print %Q{'#{string}'}
   when :html
     comma_terminated = string.end_with? ';'
-    string = subst(string)
+
+    string.split(/(#[nx]?\{.*?\})/).map do |part|
+      if part.start_with? '#'
+         part.bsubst
+      else
+        part.gsub(%{'}, %{\\\\'}) # escape quotes
+      end
+    end.join
+
     string.chop!.gsub!(/\s*\n(\s*)/m, %Q{'+\n\\1'}) if comma_terminated
     string = "'#{string}'"
     string = "$(#{string})" if opts[:jQuerize]

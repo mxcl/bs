@@ -57,13 +57,13 @@ class BullTests < Test::Unit::TestCase
     assert_equal %q{"foo #{'bar'} foo"}.to_js, %q{"foo " + ('bar') + " foo"}
   end
 
-  # def test_falsy_subst
-  #   assert_equal %q{"foo #{bar}n foo"}.to_js, %q{"foo " + (bar || '') + " foo"}
-  # end
+  def test_falsy_subst
+    assert_equal %q{"foo #n{bar} foo"}.to_js, %q{"foo " + ((bar) || '') + " foo"}
+  end
 
-  # def test_URI_encoded_subst
-  #   assert_equal %q{"foo #{bar}x foo"}.to_js, %q{"foo " + encodeURIComponent(bar) + " foo"}
-  # end
+  def test_URI_encoded_subst
+    assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + encodeURIComponent(bar) + " foo"}
+  end
 
   # def test_misc1
   #   input = <<-end
