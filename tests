@@ -87,9 +87,9 @@ class BullTests < Test::Unit::TestCase
     assert_equal input, output
   end
 
-  # def test_html2
-  #   assert_equal %q{var a = <ol><li>#{foo};}.to_js, %q{var a = $('<ol><li>' + (foo) + '');}
-  # end
+  def test_html2
+    assert_equal %q{var a = <ol><li>#{foo};}.to_js, %q{var a = $('<ol><li>' + (foo) + '');}
+  end
 
   # def test_misc1
   #   input = <<-end

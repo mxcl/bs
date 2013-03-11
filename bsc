@@ -36,6 +36,7 @@ def whitespace_until_EOL #TODO is for loop more concise?
     return false unless $input[j..j] =~ /\s/
     j += 1
   end
+  return true # no more file left counts as EOL too!
 end
 
 def c
@@ -127,9 +128,9 @@ tokenize do |type, string, opts|
   when :html
     comma_terminated = string.end_with? ';'
 
-    string.split(/(#[nx]?\{.*?\})/).map do |part|
+    string = string.split(/(#[nx]?\{.*?\})/).map do |part|
       if part.start_with? '#'
-         part.bsubst
+        part.bsubst("'")
       else
         part.gsub(%{'}, %{\\\\'}) # escape quotes
       end
