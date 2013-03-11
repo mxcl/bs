@@ -1,23 +1,26 @@
 BullScript
 ==========
-Like JavaScript but find it a little limited?
+BullScript is yet another language that compiles to Javascript.
 
-Like CoffeeScript but find it a little over-the-top?
+Well actually not really. BullScript *is* Javascript. Javascript with a little
+syntactic sugar to get rid of the rough edges. You still must write
+Javascript, you still must use curly-braces, you still must put paranthesis
+around your function parameters. But we have added a little sugar so that
+some of the bigger pains in the language are much nicer.
 
-BullScript is a nice in-between: syntactic sugar, but without going too far:
-you will always know what JavaScript is being generated. I’m not
-bullscripting you.
+At the end of your BullScript day, you are still writing Javascript, not
+something else that is “better”.
 
-The Bullscript compiler is also WAY simple. PLEASE fork and improve and make a JS version, it will not take you long!
+Alpha Quality
+=============
+The test-suite probably has holes, and some features are not implemented, but
+we’re using it for our projects, so you may like to also.
 
-BS is designed to help you write JS that is easier to read. With convenience
-functionality to help you write better JS. BUT at the end of the day, you are
-still writing Javascript. Not something else.
-
-Still Pretty New
-================
-It works, but you may have some trouble. It's pretty easy to try it though,
-so what's to lose? Soon we'll have all the problems sorted out. So star it!
+Bugs
+====
+The Bullscript compiler is a messy bunch of code, but it’s short and only one
+file. You can probably figure out how to improve/fix it. But failing that just
+open a ticket.
 
 Examples
 ========
@@ -83,17 +86,6 @@ Fancy escaping:
 /*js*/ "http://foo.com/" + encodeURIComponent(bar) + "/jee"
 ```
 
-
-TODO - #{}x
-===========
-Auto escape HTML:
-
-    /*bs*/ <a href="http://example.com/#{foo}x">;
-    /*js*/ '<a href='http://example.com/' + encodeURIComponent(foo) + '">';
-
-Also we should auto escape <, & etc. when inserting as variables in text nodes
-(as `&lt;`, `&amp;`, etc.).
-
 TODO - <<
 =========
 How about a new operator that is handy for jQuery?
@@ -111,11 +103,6 @@ Use parenthesis to append at different levels in the DOM:
 ```js
 $bar << (<ol> << <li>#{foo} << <li>#{bar});
 ```
-
-TODO - Multiline Strings
-========================
-Using the """foo""" syntax
-
 
 HTML Blocks Caveats
 ===================

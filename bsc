@@ -40,15 +40,65 @@ def whitespace_until_EOL #TODO is for loop more concise?
 end
 
 def c
+  exit if $i >= $input.length
   $input[$i..$i]
 end
 
 def seek s
-  until $input[$i..$i+s.length-1] == s or $i >= $input.length - s.length
+  s.upcase!
+  while $i < $input.length - s.length
+    return true if $input[$i..$i+s.length-1].upcase == s
+    $i += 1
+  end
+  $i = $input.length - 1
+  false
+end
+
+def seek_bounded_html
+  j = $i
+  n = 1
+  begin $i +=1 end while c =~ /[a-zA-Z]/
+  tag = $input[j+1..$i-1].upcase
+  if tag == 'H' && c =~ /[0-9]/
+    tag = tag + c
+    $i +=1
+  end
+  loop do
+    found = case tag
+    when 'IMG'
+      seek '>'
+      break
+    else
+      seek tag
+    end
+    break unless found
+
+    if $input[$i-2..$i+tag.length].upcase == "</#{tag}>"
+      n -= 1
+      if n == 0
+        $i += tag.length
+        break
+      end
+    elsif $input[$i-1..$i+tag.length].upcase =~ /<#{tag}[ >]/
+      n += 1
+    end
     $i += 1
   end
 end
 
+def seek_html
+  return unless peek =~ /[a-zA-Z]/
+
+  loop do
+    seek_bounded_html
+    j = $i
+    begin
+      j += 1
+    end while $input[j..j] =~ /\s/
+    return true unless $input[j..j+1] =~ /<[a-zA-Z]/
+    $i = j
+  end
+end
 
 ################################################################### core logic
 def tokenize
@@ -76,18 +126,9 @@ def tokenize
         yield :string, $input[j..$i]
       end
     when '<'
-      if peek =~ /[a-zA-Z]/
-        opts = {:jQuerize => true}
-        j = $i
-        loop do
-          $i += 1
-          break if c == ';' and whitespace_until_EOL;
-          if c == '<' and peek == '<';
-            whitespace_reverse
-            break
-          end
-        end
-        yield :html, $input[j..$i], opts
+      j = $i
+      if seek_html
+        yield :html, $input[j..$i]
       else
         print c
       end
@@ -126,8 +167,6 @@ tokenize do |type, string, opts|
     string = string.gsub(/\s*\n(\s*)/m, %Q{\\n'+\n\\1'})
     print %Q{'#{string}'}
   when :html
-    comma_terminated = string.end_with? ';'
-
     string = string.split(/(#[nx]?\{.*?\})/).map do |part|
       if part.start_with? '#'
         part.bsubst("'")
@@ -135,11 +174,9 @@ tokenize do |type, string, opts|
         part.gsub(%{'}, %{\\\\'}) # escape quotes
       end
     end.join
-
-    string.chop!.gsub!(/\s*\n(\s*)/m, %Q{ '+\n\\1'}) if comma_terminated
+    string.gsub!(/\s*\n(\s*)/m, %Q{ '+\n\\1'})
     string = "'#{string}'"
-    string = "$(#{string})" if opts[:jQuerize]
-    string = "#{string};" if comma_terminated
+    string = "$(#{string})"
     print string
   end
 end

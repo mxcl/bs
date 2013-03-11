@@ -6,19 +6,23 @@ Dir.chdir("#{__FILE__}/..")
 
 class String
   def to_js
-    ENV['BS'] = self
-    `echo "$BS" | ./bsc`.chomp
+    f = IO.popen("./bsc", 'r+')
+    f.write(self)
+    f.close_write
+    f.read
+  ensure
+    f.close
   end
 end
 
 class BullTests < Test::Unit::TestCase
   def test_double_quote_substitution
-    assert_equal %q{"foo #{bar} foo"}.to_js, '"foo " + (bar) + " foo"'
+    assert_equal '"foo " + (bar) + " foo"', %q{"foo #{bar} foo"}.to_js
   end
 
   def test_single_quote_substitution
     s = %q{'foo #{bar} foo'}
-    assert_equal s.to_js, s
+    assert_equal s, s.to_js
   end
 
   def test_multiline_strings
@@ -66,7 +70,57 @@ class BullTests < Test::Unit::TestCase
   end
 
   def test_html1
-    assert_equal %q{var a = <ol><li>;}.to_js, %q{var a = $('<ol><li>');}
+    assert_equal %q{var a = $('<ol><li>;')}, %q{var a = <ol><li>;}.to_js
+  end
+
+  def test_unwrapped_multilin_html
+    input = <<-end.to_js
+      <h1>\#{RACKIT_TAGLINE}</h1>
+      <div></div>
+      <div></div>
+      <div></div>
+      var a = 'foo';
+    end
+    output = <<-end
+      $('<h1>' + (RACKIT_TAGLINE) + '</h1> '+
+      '<div></div> '+
+      '<div></div> '+
+      '<div></div>')
+      var a = 'foo';
+    end
+    assert_equal output, input
+  end
+
+  def test_img
+    input = <<-end.to_js
+      var b = 'a';
+      <img src=foo>
+      <section></section>
+      var a = 'b';
+    end
+    output = <<-end
+      var b = 'a';
+      $('<img src=foo> '+
+      '<section></section>')
+      var a = 'b';
+    end
+    assert_equal output, input
+  end
+
+  def test_misc3
+    assert_equal "$('<a>')", "<a>".to_js
+  end
+
+  def test_misc2
+    input = <<-end.to_js
+      <h1>\#{RACKIT_TAGLINE}</h1>
+      var a = 123;
+    end
+    output = <<-end
+      $('<h1>' + (RACKIT_TAGLINE) + '</h1>')
+      var a = 123;
+    end
+    assert_equal input, output
   end
 
   def test_multiline_html
@@ -75,39 +129,89 @@ class BullTests < Test::Unit::TestCase
       <li>one
       <li>two
       <li>three
-    </ol>;
+    </ol>
+    var foo = 'abc';
     end
     output = <<-end
     var a = $('<ol> '+
       '<li>one '+
       '<li>two '+
       '<li>three '+
+    '</ol>')
+    var foo = 'abc';
+    end
+    assert_equal output, input
+  end
+
+  def test_html2
+    assert_equal %q{var a = <ol><li>#{foo}</ol>;}.to_js, %q{var a = $('<ol><li>' + (foo) + '</ol>');}
+  end
+
+  def test_recursive_html
+  input = <<-end.to_js
+    var c = 123;
+    var a = <ol>
+      <li>one
+      <li>two
+      <li><ol>
+          <li>four
+          <li>five</li>
+        </ol>
+      </li>
+    </ol>;
+    var foo = 'abc';
+    end
+    output = <<-end
+    var c = 123;
+    var a = $('<ol> '+
+      '<li>one '+
+      '<li>two '+
+      '<li><ol> '+
+          '<li>four '+
+          '<li>five</li> '+
+        '</ol> '+
+      '</li> '+
     '</ol>');
+    var foo = 'abc';
     end
     assert_equal input, output
   end
 
-  def test_html2
-    assert_equal %q{var a = <ol><li>#{foo};}.to_js, %q{var a = $('<ol><li>' + (foo) + '');}
+  def test1232
+    input = <<-end.to_js
+      <img src="http://img.rackit.co/\#{deroute.artist.enplus()}/\#{(deroute.album || '').enplus()}?\#{decade}s" width=325>
+      <article>\#{slang}s \#{deroute.artist}</article>
+    end
+    output = <<-end
+      $('<img src="http://img.rackit.co/' + (deroute.artist.enplus()) + '/' + ((deroute.album || '').enplus()) + '?' + (decade) + 's" width=325> '+
+      '<article>' + (slang) + 's ' + (deroute.artist) + '</article>')
+    end
+    assert_equal output, input
   end
 
-  # def test_misc1
-  #   input = <<-end
-  #   <style>
-  #     #content > ul {
-  #       -webkit-column-count: 5;
-  #       -webkit-column-break-before: always;
-  #     }
-  #   </style>;
-  #   end
-  #   output = <<-end
-  #   $('<style>'+
-  #     '#content > ul {'+
-  #       '-webkit-column-count: 5;'+
-  #       '-webkit-column-break-before: always;'+
-  #     '}'+
-  #   '</style>');
-  #   end
-  #   assert_equal input.to_js, output
+  # def test_real_parse
+  #   input  = "<img src=#{a > b}>"
+  #   output = "$('<img src=' + (a > b) + '>'"
+  #   assert_equal output, input
   # end
+
+  def test_misc1
+    input = <<-end
+    <style>
+      #content > ul {
+        -webkit-column-count: 5;
+        -webkit-column-break-before: always;
+      }
+    </style>;
+    end
+    output = <<-end
+    $('<style> '+
+      '#content > ul { '+
+        '-webkit-column-count: 5; '+
+        '-webkit-column-break-before: always; '+
+      '} '+
+    '</style>');
+    end
+    assert_equal input.to_js, output
+  end
 end
