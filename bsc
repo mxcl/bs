@@ -121,7 +121,7 @@ tokenize do |type, string, opts|
     print string.bsubst
   when :multi
     string = string[3..-4] # remove surrounding triple quotes
-    string = string.gsub("'", "\\'")
+    string = string.gsub("'", "\\\\'")
     string = string.bsubst("'")
     string = string.gsub(/\s*\n(\s*)/m, %Q{\\n'+\n\\1'})
     print %Q{'#{string}'}
