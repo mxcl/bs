@@ -134,9 +134,9 @@ We have not done that yet though. Please fork and fix! Or suggest better
 solutions in a ticket! :)
 
 
-HTML Blocks Whitespace
-======================
-Typically we don't add whitespace around stuff eg:
+HTML Blocks & Whitespace
+========================
+We add a space at the ends of HTML lines:
 
     <b>Boo
     Foo
@@ -144,12 +144,12 @@ Typically we don't add whitespace around stuff eg:
 
 Will compile to:
 
-    '<b>Boo'+
-    'Foo'+
+    '<b>Boo '+
+    'Foo '+
     Goo'</b>'
 
-Which renders as 'BooFooGoo', when 'Boo Foo Goo' was probably expected. We
-should fix the compiler to add newlines (or spaces) into the strings.
+We do this because if you wrote that HTML the newline would count as
+whitespace. We use a space instead of a newline as it’s less visual-noise.
 
 
 Caveats

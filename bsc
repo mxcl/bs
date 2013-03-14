@@ -136,7 +136,7 @@ tokenize do |type, string, opts|
       end
     end.join
 
-    string.chop!.gsub!(/\s*\n(\s*)/m, %Q{'+\n\\1'}) if comma_terminated
+    string.chop!.gsub!(/\s*\n(\s*)/m, %Q{ '+\n\\1'}) if comma_terminated
     string = "'#{string}'"
     string = "$(#{string})" if opts[:jQuerize]
     string = "#{string};" if comma_terminated

@@ -78,10 +78,10 @@ class BullTests < Test::Unit::TestCase
     </ol>;
     end
     output = <<-end
-    var a = $('<ol>'+
-      '<li>one'+
-      '<li>two'+
-      '<li>three'+
+    var a = $('<ol> '+
+      '<li>one '+
+      '<li>two '+
+      '<li>three '+
     '</ol>');
     end
     assert_equal input, output
