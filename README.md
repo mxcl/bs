@@ -13,8 +13,8 @@ something else that is “better”.
 
 Alpha Quality
 =============
-The test-suite probably has holes, and some features are not implemented, but
-we’re using it for our projects, so you may like to also.
+The test-suite has holes, and some features are not implemented, but we’re
+using it for our projects, so you may like to also.
 
 Bugs
 ====

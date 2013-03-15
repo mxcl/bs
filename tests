@@ -66,7 +66,7 @@ class BullTests < Test::Unit::TestCase
   end
 
   def test_URI_encoded_subst
-    assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + encodeURIComponent(bar) + " foo"}
+    assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + encodeURIComponent(bar).replace('%20', '+') + " foo"}
   end
 
   def test_html1
@@ -195,8 +195,23 @@ class BullTests < Test::Unit::TestCase
   #   assert_equal output, input
   # end
 
+  def test_multiline_with_internal_quotes
+    input = <<-end.to_js
+    """foo
+    bar \#{jee || ''} haha
+    mooface
+    """
+    output = <<-end.to_js
+    'foo\n'+
+    'bar ' + (jee || '') + ' haha\n'+
+    'mooface\n'+
+    ''
+    end
+    assert_equal output, input
+  end
+
   def test_misc1
-    input = <<-end
+    input = <<-end.to_js
     <style>
       #content > ul {
         -webkit-column-count: 5;
@@ -212,6 +227,20 @@ class BullTests < Test::Unit::TestCase
       '} '+
     '</style>');
     end
-    assert_equal input.to_js, output
+    assert_equal output, input.to_js
+  end
+
+  def test_img
+    input = <<-end.to_js
+    var b = 1;
+    <img class=REC src=/static/img/REC.png>;
+    var a = 1;
+    end
+    output = <<-end
+    var b = 1;
+    $('<img class=REC src=/static/img/REC.png>');
+    var a = 1;
+    end
+    assert_equal output, input.to_js
   end
 end

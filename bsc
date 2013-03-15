@@ -141,12 +141,14 @@ end
 
 class String
   def bsubst sep = '"'
-    self.gsub(/#([nx]?)\{(.*?)\}/) do
+    self.gsub(/#([nxX]?)\{(.*?)\}/) do
       inner = case $1
       when 'n'
         "((#{$2}) || '')"
+      when 'X'
+        "encodeURIComponent(#{$2}).replace(/[!'()]/g, escape).replace(/\\*/g, '%2A')"
       when 'x'
-        "encodeURIComponent(#{$2})"
+        "encodeURIComponent(#{$2}).replace('%20', '+')"
       else
         "(#{$2})"
       end
