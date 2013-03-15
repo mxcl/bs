@@ -19,8 +19,8 @@
         }
       ]
     },
-    { "begin": "<\\w+(\\s+|>)",
-      "end": "(>)(;)|\\s*<<",
+    { "begin": "<(\\w+)(\\s+|>)",
+      "end": "(\\1>)|\\s*<<",
       "beginCaptures": {
         "0": { "name": "entity.name.tag.html" }
       },
