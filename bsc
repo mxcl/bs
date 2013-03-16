@@ -140,15 +140,19 @@ def tokenize
 end
 
 class String
-  def bsubst sep = '"'
-    self.gsub(/#([nNxX]?)\{(.*?)\}/) do
-      inner = if $1 and $1.length > 0
-        "bs.#$1(#$2)"
+  def bsubst sep = "'"
+    split(/(#[nNxX]?\{.*?\})/).map do |part|
+      if part =~ /#([nNxX]?)\{(.*?)\}/
+        subst = if $1 and $1.length > 0
+          "bs.#$1(#$2)"
+        else
+          "(#$2)"
+        end
+        %Q{#{sep} + #{subst} + #{sep}}
       else
-        "(#$2)"
+        part.gsub(sep, %{\\\\#{sep}})
       end
-      %Q{#{sep} + #{inner} + #{sep}}
-    end
+    end.join
   end
 end
 
@@ -156,24 +160,15 @@ end
 tokenize do |type, string, opts|
   case type
   when :string
-    print string.bsubst
+    print %{"#{string[1..-2].bsubst('"')}"}
   when :multi
     string = string[3..-4] # remove surrounding triple quotes
-    string = string.gsub("'", "\\\\'")
-    string = string.bsubst("'")
+    string = string.bsubst
     string = string.gsub(/\s*\n(\s*)/m, %Q{\\n'+\n\\1'})
     print %Q{'#{string}'}
   when :html
-    string = string.split(/(#[nx]?\{.*?\})/).map do |part|
-      if part.start_with? '#'
-        part.bsubst("'")
-      else
-        part.gsub(%{'}, %{\\\\'}) # escape quotes
-      end
-    end.join
+    string = string.bsubst
     string.gsub!(/\s*\n(\s*)/m, %Q{ '+\n\\1'})
-    string = "'#{string}'"
-    string = "$(#{string})"
-    print string
+    print "$('#{string}')"
   end
 end
