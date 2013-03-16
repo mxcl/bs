@@ -13,53 +13,44 @@ something else that is “better”.
 
 Alpha Quality
 =============
-The test-suite has holes, and some features are not implemented, but we’re
-using it for our projects, so you may like to also.
-
-Bugs
-====
-The Bullscript compiler is a messy bunch of code, but it’s short and only one
-file. You can probably figure out how to improve/fix it. But failing that just
-open a ticket.
+The test-suite no doubt has holes. So you may have to fix some bugs if you use
+it at this stage. But, we’re actively developing BS, so hgopefully its quality
+will rapidly improve.
 
 Examples
 ========
+Inline HTML
+-----------
 
 ```js
-/*bs*/ var foo = "Hello #{name}, ‘sup?";
-/*js*/ var foo = "Hello " + name + ", ‘sup?";
+/** bs **/
+
+var bar = <div class="abc">
+            Hello <a href='#{href}'>#{name}</a>, sup?
+          </div>;
+
+/** js **/
+
+var bar = $('<div class="abc"> '+
+              'Hello <a href="' + href + '">' + name + '</a>, sup? '+
+            '</div>');
 ```
 
-Easy enough, Ruby-style variable substitution. CoffeeScript does that too,
-init? But how about writing HTML inline!
+It’s time to stop writing your HTML5 applications across multiple files.
 
+Variable Substitution
+---------------------
 ```js
-/*bs*/ var bar = <div class="abc">
-                     Hello <a href='#{href}'>#{name}</a>, sup?
-                 </div>;
-
-/*js*/ var bar = '<div class="abc">'+
-                    'Hello <a href="' + href + '">' + name + '</a>, sup?'+
-                 '</div>';
+/** bs **/ var foo = "Hello #{name}, ‘sup?";
+/** js **/ var foo = "Hello " + name + ", ‘sup?";
 ```
 
-Multi-line too! Notice how BS is generated with a one-to-one line mapping?
-
-Being able to write HTML inline makes templates not-always-required. But
-that’s up to you.
-
-How about automatic jQuerization?
-
-```js
-/*bs*/ var $bar = <ol><li>foo</ol>;
-/*js*/ var $bar = $('<ol><li>foo</ol>');
-```
-
-Multiline strings:
+Multiline Strings
+-----------------
 
 ```js
   """Line one
-     Line two
+     Line #{two}
      Line three"""
 ```
 
@@ -67,127 +58,69 @@ Becomes:
 
 ```js
   "Line one\n"+
-     "Line two\n"+
+     "Line " + two + "\n"+
      "Line three"
 ```
 
-Because we're generating HTML, we don't add the leading whitespace to the
-string on the extra lines. We do however add a trailing newline character.
-
-Fancy escaping:
-
+Fancy Escaping
+--------------
 ```js
-/*bs*/ "foo #n{bar} jee"
-/*js*/ "foo " + (bar || '') + " jee"
+/** bs **/ "foo #n{bar} jee"
+/** js* */ "foo " + (bar || '') + " jee"
 ```
 
 ```js
-/*bs*/ "http://foo.com/#x{bar}/jee"
-/*js*/ "http://foo.com/" + encodeURIComponent(bar) + "/jee"
+/** bs **/ "http://foo.com/#x{bar}/jee"
+/** js **/ "http://foo.com/" + encodeURIComponent(bar) + "/jee"
 ```
 
-TODO - <<
-=========
-How about a new operator that is handy for jQuery?
+In fact there is more to this: they call through to bs.js so that the escapes
+are more useful. `#n{}` will output an empty string for `null` and
+`undefined`, while `#N{}` will do so for empty Arrays, Objects and anything
+that is `falsy`. `#x{}` does “pretty” escaping, ie. `encodeURIComponent` but
+replacing `%20`s with `+`s, while `#N{}` does *full* escaping, that is
+`encodeURIComponent` but it also encodes `!'()` which doesn’t hurt, but can
+avoid certain categories of bug. If you want vanilla `encodeURIComponent` then
+(currently) you’ll have to call it yourself.
 
-```js
-/*bs*/ $bar << <li>foo << <li>bar;
-/*js*/ $bar.append('<li>foo').append('<li>bar');
+Using BullScript
+================
+Currently we only have the compiler: `bsc`.
+
+Using it in eg. Sinatra is thus (you will need to adapt paths):
+
+```rb
+get '/*.js' do |fn|
+  `./bsc #{fn}.js`
+end
 ```
 
-Note, this operator is a little unfortunate considering the angular brackets
-of the inline HTML, so we should think of something better.
+And when deploying just adapt your build-system to compile `bs` to `js`, eg.
+for `make` here’s an implicit rule you can use:
 
-Use parenthesis to append at different levels in the DOM:
-
-```js
-$bar << (<ol> << <li>#{foo} << <li>#{bar});
+```Makefile
+%.js: %.bs
+    ./bsc $< > $@
 ```
 
-HTML Blocks Caveats
+Inline HTML Caveats
 ===================
-Since many of the things you write inside HTML blocks are in fact valid
-Javascript, and multiline strings are not typically valid in Javascript,
-there are some caveats regarding these special blocks.
-
-Namely we will continue to suck everything after a <\w into an HTML block
-until you terminate it with a trailing semi-colon or a << operator.
-
-Probably ideally we would use proper JS statement termination rules, and
-detect when a newline is in fact a terminator. We could do this by analysing
-your markup and seeing that you have closed the opening block.
-
-We have not done that yet though. Please fork and fix! Or suggest better
-solutions in a ticket! :)
-
-
-HTML Blocks & Whitespace
-========================
-We add a space at the ends of HTML lines:
-
-    <b>Boo
-    Foo
-    Goo</b>
-
-Will compile to:
-
-    '<b>Boo '+
-    'Foo '+
-    Goo'</b>'
-
-We do this because if you wrote that HTML the newline would count as
-whitespace. We use a space instead of a newline as it’s less visual-noise.
-
-
-Caveats
-=======
-HTML blocks need to be terminated by a semi-colon and then straight after a
-newline. This way semi-colons in the HTML are ignored. Flakey, we know.
-
-Currently we can't figure out the HTML portion unless you choose not to use
-the less-than operator (<) without whitespace like so:
-
-    if (1 <abc)
-
-Currently you can't put string substituions inside of string substitutions,
-like:
-
-    "foo #{bar("#{bar}")} bar"
-
-
-MAYBE
-=====
-* Make the value of this in our-style maps be the array it is invoked on by
-default, eg:
-
-    array.map(function(obj, array) { /* this is array now due to 2nd param */} );
-
-* Print and return, return operator (only if some global logging is set, debug only):
-
-    printurn array.map(foo); // => var a = array.map(foo); console.log(a); return a;
-
-* Inline SASS so you can define variables and use them in your JS *and* your CSS!
-* Defaults for function parameters:
-
-    function foo(a, b = []) {
-        a = b;
-    }
-    function foo(a, b) { b = b || [];
-        a = b;
-    }
-
-* Convenience try block syntax:
-
-    function foo() try {
-    } catch (e) {
-    }
-    function foo() { try {
-    } catch (e) {
-    }}
-
-* How about Ruby-style block syntax:
+You have to cleanly terminate your HTML tags. This is how the parser
+determines where HTML ends. So if you start with a <div> end with a </div>.
+Though having said this, we understand tags like <img> too. Also you can do
+this:
 
 ```js
-/* bs */ [1,2,3].map{ |x| x * 2 }.each{ |x| console.log(x); }
-/* js */ [1,2,3].map(function(x){ return x * 2; }).each(function(x){ console.log(x); })
+var a = <div>foo</div>
+        <b>blah</b>
+var b = 2;
 ```
+
+Additionally, (currently) the parser will be confused by JavaScript of this
+kind:
+
+```js
+if (a <bc) { bar(); }
+```
+
+Heck, the above even breaks Sublime Text’s Markdown syntax highlighting.
