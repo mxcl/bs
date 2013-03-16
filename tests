@@ -62,11 +62,11 @@ class BullTests < Test::Unit::TestCase
   end
 
   def test_falsy_subst
-    assert_equal %q{"foo #n{bar} foo"}.to_js, %q{"foo " + ((bar) || '') + " foo"}
+    assert_equal %q{"foo #n{bar} foo"}.to_js, %q{"foo " + bs.n(bar) + " foo"}
   end
 
   def test_URI_encoded_subst
-    assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + encodeURIComponent(bar).replace('%20', '+') + " foo"}
+    assert_equal %q{"foo #x{bar} foo"}.to_js, %q{"foo " + bs.x(bar) + " foo"}
   end
 
   def test_html1
@@ -197,15 +197,16 @@ class BullTests < Test::Unit::TestCase
 
   def test_multiline_with_internal_quotes
     input = <<-end.to_js
-    """foo
-    bar \#{jee || ''} haha
-    mooface
-    """
+      """foo
+      bar \#{jee || ''} haha
+      mooface
+      """
+    end
     output = <<-end.to_js
-    'foo\n'+
-    'bar ' + (jee || '') + ' haha\n'+
-    'mooface\n'+
-    ''
+      'foo\\n'+
+      'bar ' + (jee || '') + ' haha\\n'+
+      'mooface\\n'+
+      ''
     end
     assert_equal output, input
   end
