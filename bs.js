@@ -7,7 +7,7 @@
         x: function(y) {
             if (y === null || y === undefined)
                 return '';
-            return encodeURIComponent(y).replace('%20', '+');
+            return encodeURIComponent(y).replace(/%20/g, '+');
         },
         X: function(y) {
             if (y === null || y === undefined)
