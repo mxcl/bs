@@ -1,22 +1,16 @@
 router.add(function(artist, album, track) {
-    var $el = <div id="bandrack">;
-    var $s1 = <section class="glamourshot">;
-    var $s2 = <section class="biography">;
-    var $s3 = <section class="discography">;
+    var $el = <div id="bandrack"></div>;
+    var $s1 = <section class="glamourshot"></section>;
+    var $s2 = <section class="biography"></section>;
+    var $s3 = <section class="discography"></section>;
 
-    $('#content').html($el);
-    $el << $s1 << $s2 << $s3;
+    $('#content').html($el << $s1 << $s2 << $s3);
 
-    rackit.ws.read("/artist/#{artist + 123}", function(info) {
-        info = _.defaults(info, {
-            bio: "A mysterious biography.",
-            genres: []
-        });
-
+    rackit.ws.read("/artist/#X{artist + 123}", function(info) {
         $s1 <<  <div class="glamourshot-about">
                     <h2>#{info.name}
-                        <a class="hidden" href="http://musicbrainz.org/artist/#{mbaid}" target="_blank">mbaid:#{info.mbaid}</a>
-                        <a class="hidden" href="http://allmusic.com/artist/#{artist}" target="_blank">allmusic</a>
+                        <a class="hidden" href="http://musicbrainz.org/artist/#x{mbaid}" target="_blank">mbaid:#{info.mbaid}</a>
+                        <a class="hidden" href="http://allmusic.com/artist/#x{artist}" target="_blank">allmusic</a>
                     </h2>
                 </div>
                 <div class="genres">
@@ -26,9 +20,9 @@ router.add(function(artist, album, track) {
         $s2.html(info.bio);
     });
 
-    rackit.ws.read("/music/#{artist}", function(tapes) {
+    rackit.ws.read("/music/#X{artist}", function(tapes) {
         var views = tapes.map{ |tape| new TapeView(new Album(tape)).render() };
-        $s3 << (<ol> << views.pluck('el'));
+        $s3 << (<ol></ol> << views.pluck('el'));
         views.invoke('fit');
         views.invoke('resolve');
 
@@ -36,8 +30,8 @@ router.add(function(artist, album, track) {
             $s3 << <p class="summary">#{views.length} Releases</p>;
 
         $s1 << tapes.pluck('released').decadize().map{ |decade|
-            <img src='http://img.rackit.co/#{artist}/#{album}?#{decade}s' width=325>
-            <article>#{decade.prettyDecade()}s #{artist.deplus()}</article>;
+            <img src='http://img.rackit.co/#X{artist}/#X{album}?#{decade}s' width=325>
+            <article>#{decade.prettyDecade()}s #{artist}</article>
         };
 
         var articles = $s1.find('article');
