@@ -97,12 +97,12 @@ strong {
   font-weight:700;
 }
 
-ul li {
+ul > li {
   list-style: inside;
   padding-left: 25px;
 }
 
-ol li {
+ol > li {
   list-style: decimal inside;
   padding-left: 20px;
 }
@@ -166,6 +166,10 @@ pre {
   overflow: auto;
   overflow-y: hidden;
 	margin-bottom: 32px;
+}
+
+ul pre {
+  margin-bottom: 10px;
 }
 
 

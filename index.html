@@ -15,8 +15,8 @@
     <style>
     .inv { color: #3a11df; }
     .becomes {
-      background: hsla(64, 17%, 40%, 0.55);
-      color: white;
+      background: hsla(64, 7%, 40%, 0.23);
+      color: rgba(0,0,0,0.375);
       text-transform: uppercase;
       padding: 0.5em;
       margin: -32px 4px 0 4px;
@@ -35,42 +35,38 @@
     code {
       background: rgba(0,0,0,0.12);
     }
+    h3 code {
+      font-size: inherit;
+    }
+    h3 {
+      margin: 0;
+      font-size: inherit;
+      font-familt: inherit;
+    }
     </style>
   </head>
   <body>
     <div class="wrapper">
       <header>
         <h1 class="header">BullScript</h1>
-        <p class="header">JavaScript with less bull.</p>
+        <p class="header">Better JS through BS.</p>
 
         <ul>
           <li class="download"><a class="buttons" href="https://github.com/mxcl/bs/zipball/master">Download ZIP</a></li>
           <li class="download"><a class="buttons" href="https://github.com/mxcl/bs/tarball/master">Download TAR</a></li>
           <li><a class="buttons github" href="https://github.com/mxcl/bs">View On GitHub</a></li>
         </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/mxcl">mxcl</a></p>
-
-
       </header>
       <section>
-        <h1>what.bs</h1>
+      <h1>What’s This?</h1>
+<p>BullScript is Javascript, but with a handful of helpful new bits, so you
+can get on with web-development and do it a little faster; a little better.</p>
 
-<p>BullScript is (yet another) language that compiles to Javascript.</p>
-
-<p>Well actually, let’s not think about it like that. BullScript is
-Javascript; Javascript with just a little sugar; Javascript even better suited
-for web-development.
-</p>
-
-<p>At the end of your BullScript day, you are still writing Javascript, not
-something else.</p>
-
-<h1>examples.bs</h1>
+<h1>K Then. What’s Good About It?</h1>
 
 <h2>Inline HTML</h2>
 
-<p>Shouldn’t HTML be a proper type when you’re doing web-development?
+<p>Shouldn’t HTML be, like, a <i>real</i> type when you’re doing web-development?
 
 <div class="highlight"><pre>
 <span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="s2">&lt;div class="abc"&gt;
@@ -86,9 +82,14 @@ something else.</p>
             <span class="s1">'&lt;/div&gt;'</span><span class="p">);</span>
 </pre></div>
 
+<p>Well, not a <em>real</em> type, but as close as we can get without pretending
+  we’re a new language. You can write it out—all multiline—you can
+  substitute in variables and it’s initialized as a jQuery object. The
+  JavaScript is always generated one-to-one with your BullScript.
+
 <h2>Variable Substitution</h2>
 
-<p>Of course, Ruby-style variable substituions works in normal strings too:</p>
+<p>Of course, Ruby-style variable substitutions works in normal strings too:</p>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Hello <span class="inv">#{name}</span>, ‘sup?"</span><span class="p">;</span></pre></div>
 
@@ -135,27 +136,35 @@ replacing <code>%20</code>s with <code>+</code>s, while <code>#N{}</code> does <
 avoid certain categories of bug. If you want vanilla <code>encodeURIComponent</code> then
 (currently) you’ll have to call it yourself.</p>
 
-<h1>Using BullScript</h1>
+<h1>So… How Do I Use It?</h1>
 
-<p>Currently we only have the compiler: <code>bsc</code>.</p>
-
-<p>Use it in eg. Sinatra with something like this:</p>
-
-<div class="highlight"><pre><span class="n">get</span> <span class="s1">'/*.js'</span> <span class="k">do</span> <span class="o">|</span><span class="n">fn</span><span class="o">|</span>
+<ol>
+  <li>Save your files with a <code>.bs</code> extension.</li>
+  <li>Use our <a href='https://github.com/mxcl/bs/blob/master/BullScript.tmLanguage'>tmLanguage file</a> for syntax highlighting.</li>
+  <li>Compile your BS to JS when needed using <code>bsc</code>:
+    <ul>
+      <li><b>Sinatra</b>
+        <div class="highlight"><pre><span class="n">get</span> <span class="s1">'/*.js'</span> <span class="k">do</span> <span class="o">|</span><span class="n">fn</span><span class="o">|</span>
   <span class="sb">`./bsc </span><span class="si">#{</span><span class="n">fn</span><span class="si">}</span><span class="sb">.bs`</span>
 <span class="k">end</span>
-</pre></div>
-
-<p>And when deploying just adapt your build-system to compile <code>bs</code> to <code>js</code>, eg.
-for <code>make</code> here’s an implicit rule you can use:</p>
-
-<div class="highlight"><pre><span class="nf">%.js</span><span class="o">:</span> <span class="m">%.bs</span>
+</pre></div></li>
+      <li><b>Make</b>
+        <div class="highlight"><pre><span class="nf">%.js</span><span class="o">:</span> <span class="m">%.bs</span>
     ./bsc <span class="nv">$&lt;</span> &gt; <span class="nv">$@</span>
-</pre></div>
+</pre></div></li>
+      <li>Fork this repository and submit your own usage-examples.
+
+    </ul></li>
+</ol>
+
+<h2>Just-in-Time compilation</h2>
+
+<p>Yes, we plan to rewrite the compiler in JavaScript so you can compile your
+  BullScript in the browser as it’s needed. But we aren’t there yet.
 
       </section>
       <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p><small><a href="https://twitter.com/mxcl">mxcl</a>made.</small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
