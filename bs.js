@@ -1,3 +1,7 @@
+/** This is BullScript’s Javascript library that you probably will need to
+  * include in projects that use the BullScript compiler (bsc).
+  */
+
 (function() {
     bs = {
         x: function(y) {
