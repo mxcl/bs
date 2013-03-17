@@ -12,6 +12,30 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <style>
+    .inv { color: #3a11df; }
+    .becomes {
+      background: hsla(64, 17%, 40%, 0.55);
+      color: white;
+      text-transform: uppercase;
+      padding: 0.5em;
+      margin: -32px 4px 0 4px;
+      text-align: center;
+    }
+    .becomes:after {
+      content: "▼ Compiles to ▼";
+      margin-left: 7px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .gone {
+      font-weight: bold;
+      color: transparent;
+    }
+    code {
+      background: rgba(0,0,0,0.12);
+    }
+    </style>
   </head>
   <body>
     <div class="wrapper">
@@ -30,78 +54,82 @@
 
       </header>
       <section>
-        <h1>BullScript</h1>
+        <h1>what.bs</h1>
 
-<p>BullScript is yet another language that compiles to Javascript.</p>
+<p>BullScript is (yet another) language that compiles to Javascript.</p>
 
-<p>Well actually not really. BullScript <em>is</em> Javascript. Javascript with a little
-syntactic sugar to get rid of the rough edges. You still must write
-Javascript, you still must use curly-braces, you still must put paranthesis
-around your function parameters. But we have added a little sugar so that
-some of the bigger pains in the language are much nicer.</p>
+<p>Well actually, let’s not think about it like that. BullScript is
+Javascript; Javascript with just a little sugar; Javascript even better suited
+for web-development.
+</p>
 
 <p>At the end of your BullScript day, you are still writing Javascript, not
-something else that is “better”.</p>
+something else.</p>
 
-<h1>Alpha Quality</h1>
-
-<p>The test-suite no doubt has holes. So you may have to fix some bugs if you use
-it at this stage. But, we’re actively developing BS, so hgopefully its quality
-will rapidly improve.</p>
-
-<h1>Examples</h1>
+<h1>examples.bs</h1>
 
 <h2>Inline HTML</h2>
 
-<div class="highlight"><pre><span class="cm">/** This bs: **/</span>
+<p>Shouldn’t HTML be a proper type when you’re doing web-development?
 
-<span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"abc"</span><span class="o">&gt;</span>
-            <span class="nx">Hello</span> <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s1">'#{href}'</span><span class="o">&gt;</span><span class="err">#</span><span class="p">{</span><span class="nx">name</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/a&gt;, sup?</span>
-          <span class="o">&lt;</span><span class="err">/div&gt;;</span>
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="s2">&lt;div class="abc"&gt;
+            Hello &lt;a href="<span class="inv">#{href}</span>"&gt;<span class="inv">#{name}</span>&lt;/a&gt;, sup?
+          &lt;/div&gt;</span>;
+</pre></div>
 
-<span class="cm">/** Becomes this js: **/</span>
+<div class="becomes"></div>
 
+<div class="highlight"><pre>
 <span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;div class="abc"&gt; '</span><span class="o">+</span>
               <span class="s1">'Hello &lt;a href="'</span> <span class="o">+</span> <span class="nx">href</span> <span class="o">+</span> <span class="s1">'"&gt;'</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s1">'&lt;/a&gt;, sup? '</span><span class="o">+</span>
             <span class="s1">'&lt;/div&gt;'</span><span class="p">);</span>
 </pre></div>
 
-<p>It’s time to stop writing your HTML5 applications across multiple files.</p>
-
 <h2>Variable Substitution</h2>
 
-<div class="highlight"><pre><span class="cm">/** bs **/</span> <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Hello #{name}, ‘sup?"</span><span class="p">;</span>
-<span class="cm">/** js **/</span> <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Hello "</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">", ‘sup?"</span><span class="p">;</span>
+<p>Of course, Ruby-style variable substituions works in normal strings too:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Hello <span class="inv">#{name}</span>, ‘sup?"</span><span class="p">;</span></pre></div>
+
+<div class="becomes"></div>
+
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Hello "</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">", ‘sup?"</span><span class="p">;</span>
 </pre></div>
 
 <h2>Multiline Strings</h2>
 
-<div class="highlight"><pre>  <span class="s2">"""Line one</span>
-<span class="s2">     Line #{two}</span>
-<span class="s2">     Line three"""</span>
-</pre></div>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"""Line one
+<span class=gone>var=</span>         Line <span class="inv">#{two}</span>
+<span class=gone>var=</span>         Line three"""</span></pre></div>
 
-<p>Becomes:</p>
+<div class="becomes"></div>
 
-<div class="highlight"><pre>  <span class="s2">"Line one\n"</span><span class="o">+</span>
-     <span class="s2">"Line "</span> <span class="o">+</span> <span class="nx">two</span> <span class="o">+</span> <span class="s2">"\n"</span><span class="o">+</span>
-     <span class="s2">"Line three"</span>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">"Line one\n"</span><span class="o">+</span>
+<span class=gone>var=</span>      <span class="s2">"Line "</span> <span class="o">+</span> <span class="nx">two</span> <span class="o">+</span> <span class="s2">"\n"</span><span class="o">+</span>
+<span class=gone>var=</span>      <span class="s2">"Line three"</span>
 </pre></div>
 
 <h2>Fancy Escaping</h2>
 
-<div class="highlight"><pre><span class="cm">/** bs **/</span> <span class="s2">"foo #n{bar} jee"</span>
-<span class="cm">/** js* */</span> <span class="s2">"foo "</span> <span class="o">+</span> <span class="p">(</span><span class="nx">bar</span> <span class="o">||</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" jee"</span>
-</pre></div>
+<div class="stack highlight"><pre><span class="s2">"foo <span class=inv>#n{bar}</span> jee"</span></pre></div>
 
-<div class="highlight"><pre><span class="cm">/** bs **/</span> <span class="s2">"http://foo.com/#x{bar}/jee"</span>
-<span class="cm">/** js **/</span> <span class="s2">"http://foo.com/"</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">bar</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"/jee"</span>
+<div class="becomes"></div>
+
+<div class="stack highlight"><pre><span class="s2">"foo "</span> <span class="o">+</span> <span class="p">(</span><span class="nx">bar</span> <span class="o">||</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" jee"</span></pre></div>
+
+<div class="stack highlight"><pre><span class="s2">"http://foo.com/<span class=inv>#x{bar}</span>/jee"</span></pre></div>
+
+<div class="becomes"></div>
+
+<div class="stack highlight"><pre><span class="s2">"http://foo.com/"</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">bar</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"/jee"</span>
 </pre></div>
 
 <p>In fact there is more to this: they call through to bs.js so that the escapes
 are more useful. <code>#n{}</code> will output an empty string for <code>null</code> and
 <code>undefined</code>, while <code>#N{}</code> will do so for empty Arrays, Objects and anything
-that is <code>falsy</code>. <code>#x{}</code> does “pretty” escaping, ie. <code>encodeURIComponent</code> but
+else that is <code>falsey</code>. <code>#x{}</code> does “pretty” escaping, ie. <code>encodeURIComponent</code> but
 replacing <code>%20</code>s with <code>+</code>s, while <code>#N{}</code> does <em>full</em> escaping, that is
 <code>encodeURIComponent</code> but it also encodes <code>!'()</code> which doesn’t hurt, but can
 avoid certain categories of bug. If you want vanilla <code>encodeURIComponent</code> then
@@ -111,10 +139,10 @@ avoid certain categories of bug. If you want vanilla <code>encodeURIComponent</c
 
 <p>Currently we only have the compiler: <code>bsc</code>.</p>
 
-<p>Using it in eg. Sinatra is thus (you will need to adapt paths):</p>
+<p>Use it in eg. Sinatra with something like this:</p>
 
 <div class="highlight"><pre><span class="n">get</span> <span class="s1">'/*.js'</span> <span class="k">do</span> <span class="o">|</span><span class="n">fn</span><span class="o">|</span>
-  <span class="sb">`./bsc </span><span class="si">#{</span><span class="n">fn</span><span class="si">}</span><span class="sb">.js`</span>
+  <span class="sb">`./bsc </span><span class="si">#{</span><span class="n">fn</span><span class="si">}</span><span class="sb">.bs`</span>
 <span class="k">end</span>
 </pre></div>
 
@@ -125,40 +153,12 @@ for <code>make</code> here’s an implicit rule you can use:</p>
     ./bsc <span class="nv">$&lt;</span> &gt; <span class="nv">$@</span>
 </pre></div>
 
-<h1>Inline HTML Caveats</h1>
-
-<p>You have to cleanly terminate your HTML tags. This is how the parser
-determines where HTML ends. So if you start with a <code>&lt;div&gt;</code> end with a <code>&lt;/div&gt;</code>.
-Though having said this, we understand tags like <code>&lt;img&gt;</code> too. Also you can do
-this:</p>
-
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span><span class="nx">foo</span><span class="o">&lt;</span><span class="err">/div&gt;</span>
-        <span class="o">&lt;</span><span class="nx">b</span><span class="o">&gt;</span><span class="nx">blah</span><span class="o">&lt;</span><span class="err">/b&gt;</span>
-<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-</pre></div>
-
-<p>Additionally, (currently) the parser will be confused by JavaScript of this
-kind:</p>
-
-<div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&lt;</span><span class="nx">bc</span><span class="p">)</span> <span class="p">{</span> <span class="nx">bar</span><span class="p">();</span> <span class="p">}</span>
-</pre></div>
-
-<p>Heck, the above even breaks Sublime Text’s Markdown syntax highlighting.</p>
-
-<h1>License</h1>
-
-<p>I, Max Howell the copyright holder of this work, hereby release it into the
-public domain. This applies worldwide.</p>
-
-<p>In case this is not legally possible, I grant any entity the right to use this
-work for any purpose, without any conditions, unless such conditions are
-required by law.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
   </body>
 </html>
