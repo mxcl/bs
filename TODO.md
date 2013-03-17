@@ -1,5 +1,9 @@
 Maybe This Stuff?
 =================
+`%w[a v b]`
+-----------
+* Creates array of strings separated by spaces, like Ruby’s.
+
 `<<`
 ----
 ```js

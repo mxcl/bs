@@ -23,13 +23,13 @@ Inline HTML
 -----------
 
 ```js
-/** bs **/
+/** This bs: **/
 
 var bar = <div class="abc">
             Hello <a href='#{href}'>#{name}</a>, sup?
           </div>;
 
-/** js **/
+/** Becomes this js: **/
 
 var bar = $('<div class="abc"> '+
               'Hello <a href="' + href + '">' + name + '</a>, sup? '+
@@ -106,8 +106,8 @@ for `make` here’s an implicit rule you can use:
 Inline HTML Caveats
 ===================
 You have to cleanly terminate your HTML tags. This is how the parser
-determines where HTML ends. So if you start with a <div> end with a </div>.
-Though having said this, we understand tags like <img> too. Also you can do
+determines where HTML ends. So if you start with a `<div>` end with a `</div>`.
+Though having said this, we understand tags like `<img>` too. Also you can do
 this:
 
 ```js
