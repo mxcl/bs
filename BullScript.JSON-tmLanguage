@@ -19,8 +19,28 @@
         }
       ]
     },
+    { "begin": "<(img)(\\s+)",
+      "end": "(>)",
+      "beginCaptures": {
+        "0": { "name": "entity.name.tag.html" }
+      },
+      "endCaptures": {
+        "1": { "name": "entity.name.tag.html" }
+      },
+      "patterns": [
+        { "begin": "#[nNxX]?{",
+          "end": "}",
+          "patterns": [
+            { "include": "$self" }
+          ]
+        },
+        { "match": ".",
+          "name": "entity.name.tag.html"
+        }
+      ]
+    },
     { "begin": "<(\\w+)(\\s+|>)",
-      "end": "(\\1>)|\\s*<<",
+      "end": "(\/\\1>)",
       "beginCaptures": {
         "0": { "name": "entity.name.tag.html" }
       },

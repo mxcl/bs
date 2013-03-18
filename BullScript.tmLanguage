@@ -48,6 +48,50 @@
 		</dict>
 		<dict>
 			<key>begin</key>
+			<string>&lt;(img)(\s+)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.tag.html</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>(&gt;)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.tag.html</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>#[nNxX]?{</string>
+					<key>end</key>
+					<string>}</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>$self</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>.</string>
+					<key>name</key>
+					<string>entity.name.tag.html</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>&lt;(\w+)(\s+|&gt;)</string>
 			<key>beginCaptures</key>
 			<dict>
@@ -58,7 +102,7 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>(\1&gt;)|\s*&lt;&lt;</string>
+			<string>(/\1&gt;)</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>1</key>

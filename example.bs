@@ -1,20 +1,27 @@
 router.add(function(artist, album, track) {
+    var $s1, $s2;
     var $el = <div id="bandrack"></div>;
-    var $s1 = <section class="glamourshot"></section>;
-    var $s2 = <section class="biography"></section>;
-    var $s3 = <section class="discography"></section>;
 
-    $('#content').html($el << $s1 << $s2 << $s3);
+    $el << $s1 = <section class="biography"></section>.click(function() {
+            console.log('Section 1 clicked');
+        })
+        << $s2 = <section class="discography"></section>.click(function() {
+            console.log('Section 2 clicked');
+        });
+
+    $('#content').empty()<< $el;
 
     rackit.ws.read("/artist/#X{artist + 123}", function(info) {
-        $s1 <<  <div class="glamourshot-about">
-                    <h2>#{info.name}
-                        <a class="hidden" href="http://musicbrainz.org/artist/#x{mbaid}" target="_blank">mbaid:#{info.mbaid}</a>
-                        <a class="hidden" href="http://allmusic.com/artist/#x{artist}" target="_blank">allmusic</a>
-                    </h2>
-                </div>
-                <div class="genres">
-                    #{info.genres.join(', ')}
+        $s1 <<  <div>
+                    <div class="glamourshot-about">
+                        <h2>#{info.name}
+                            <a class="hidden" href="http://musicbrainz.org/artist/#x{mbaid}" target="_blank">mbaid:#{info.mbaid}</a>
+                            <a class="hidden" href="http://allmusic.com/artist/#x{artist}" target="_blank">allmusic</a>
+                        </h2>
+                    </div>
+                    <div class="genres">
+                        #{info.genres.join(', ')}
+                    </div>
                 </div>;
 
         $s2.html(info.bio);
