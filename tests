@@ -231,6 +231,11 @@ class BullTests < Test::Unit::TestCase
     assert_equal output, input.to_js
   end
 
+  def test_internal_quotes
+    input = %q{"<a style='font:\\"Modern Pictograms\\"'>W</a>"}
+    assert_equal input, input.to_js
+  end
+
   def test_img
     input = <<-end.to_js
     var b = 1;
