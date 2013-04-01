@@ -19,7 +19,7 @@
             return encodeURIComponent(y).replace(/[!'()]/g, escape).replace(/\*/g, '%2A');
         },
         n: function(y) {
-            if (y === null || y === undefined)
+            if (y === null || y === undefined || y === false)
                 return '';
             if (typeof(y) == 'function')
                 y = y();
