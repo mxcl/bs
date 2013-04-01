@@ -236,6 +236,10 @@ class BullTests < Test::Unit::TestCase
     assert_equal input, input.to_js
   end
 
+  def test_unescape_string
+    assert_equal %{"foo " + (bs.u(bar)) + " jee"}, %{"foo #u{bar} jee"}.to_js
+  end
+
   def test_img
     input = <<-end.to_js
     var b = 1;
