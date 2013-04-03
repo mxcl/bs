@@ -136,6 +136,12 @@ replacing <code>%20</code>s with <code>+</code>s, while <code>#N{}</code> does <
 avoid certain categories of bug. If you want vanilla <code>encodeURIComponent</code> then
 (currently) you’ll have to call it yourself.</p>
 
+<h2>Custom Escaping</h2>
+<p>Bullscript accepts any letter in variable substitution escapes. Eg:
+<code>#f{foo}</code> is compiled to <code>bs.f(foo)</code>. So you can define
+your own escape sequences that suit your coding-style or project
+respectively.</p>
+
 <h1>So… How Do I Use It?</h1>
 
 <ol>
