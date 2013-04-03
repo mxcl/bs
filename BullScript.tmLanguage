@@ -27,7 +27,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>#[nNxX]?{</string>
+					<string>#\w?{</string>
 					<key>end</key>
 					<string>}</string>
 					<key>patterns</key>
@@ -71,7 +71,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>#[nNxX]?{</string>
+					<string>#\w?{</string>
 					<key>end</key>
 					<string>}</string>
 					<key>patterns</key>
@@ -115,7 +115,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>#[nNxX]?{</string>
+					<string>#\w?{</string>
 					<key>end</key>
 					<string>}</string>
 					<key>patterns</key>

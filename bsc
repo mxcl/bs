@@ -141,8 +141,8 @@ end
 
 class String
   def bsubst sep = "'"
-    split(/(#[nNxX]?\{.*?\})/).map do |part|
-      if part =~ /#([nNxX]?)\{(.*?)\}/
+    split(/(#\w?\{.*?\})/).map do |part|
+      if part =~ /#(\w?)\{(.*?)\}/
         subst = if $1 and $1.length > 0
           "bs.#$1(#$2)"
         else

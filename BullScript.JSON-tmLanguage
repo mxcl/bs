@@ -8,7 +8,7 @@
         "0": { "name": "string.quoted.double.js" }
       },
       "patterns": [
-        { "begin": "#[nNxX]?{",
+        { "begin": "#\\w?{",
           "end": "}",
           "patterns": [
             { "include": "$self" }
@@ -28,7 +28,7 @@
         "1": { "name": "entity.name.tag.html" }
       },
       "patterns": [
-        { "begin": "#[nNxX]?{",
+        { "begin": "#\\w?{",
           "end": "}",
           "patterns": [
             { "include": "$self" }
@@ -48,7 +48,7 @@
         "1": { "name": "entity.name.tag.html" }
       },
       "patterns": [
-        { "begin": "#[nNxX]?{",
+        { "begin": "#\\w?{",
           "end": "}",
           "patterns": [
             { "include": "$self" }
