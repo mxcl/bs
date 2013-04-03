@@ -65,7 +65,7 @@ def seek_bounded_html
   end
   loop do
     found = case tag
-    when 'IMG'
+    when 'IMG', 'INPUT'
       seek '>'
       break
     else
