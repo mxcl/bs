@@ -1,5 +1,29 @@
 Maybe This Stuff?
 =================
+Assigning variables to DOM elements inline
+------------------------------------------
+Querying for bits of large HTML documents you create inline is inefficient, we
+cam avoid that:
+
+```
+a =     <div>
+b =         <a href=foo>Foo</a>
+        </div>.appendTo(foo);
+```
+
+```
+        a = $('div').append(
+            b = $('<a href=foo>Foo</a>')
+        ).appendTo(foo);
+```
+
+Comments within inline HTML
+---------------------------
+```
+var a = <div>   // comment
+        </div>
+```
+
 `%w[a v b]`
 -----------
 * Creates array of strings separated by spaces, like Ruby’s.
