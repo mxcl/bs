@@ -1,5 +1,13 @@
 Maybe This Stuff?
 =================
+More sensible handling for stuff passed in subst
+------------------------------------------------
+Eg. passing an array should separate it by spaces rather than ',' depending on
+placement, that is, <a class="#{classes}"> should space separate where as:
+<a>#{foos}</a> should ", " separate.
+
+Passing functions should call them.
+
 Assigning variables to DOM elements inline
 ------------------------------------------
 Querying for bits of large HTML documents you create inline is inefficient, we
