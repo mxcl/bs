@@ -19,7 +19,7 @@
         }
       ]
     },
-    { "begin": "<(img)(\\s+)",
+    { "begin": "<(img|input)(\\s+)",
       "end": "(>)",
       "beginCaptures": {
         "0": { "name": "entity.name.tag.html" }
