@@ -1,8 +1,8 @@
-#!/usr/bin/ruby -rubygems
+#!/usr/bin/ruby
 
 require 'test/unit'
 
-Dir.chdir("#{__FILE__}/..")
+Dir.chdir(File.dirname(__FILE__))
 
 class String
   def to_js

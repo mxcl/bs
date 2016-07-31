@@ -1,5 +1,5 @@
-BullScript
-==========
+# BullScript [![Build Status](https://travis-ci.org/mxcl/bs.svg?branch=master)](https://travis-ci.org/mxcl/bs)
+
 BullScript compiles to Javascript.
 
 Alpha Quality
