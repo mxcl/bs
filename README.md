@@ -5,7 +5,7 @@ BullScript compiles to Javascript.
 Alpha Quality
 =============
 The test-suite no doubt has holes. So you may have to fix some bugs if you use
-it at this stage. But, we’re actively developing BS, so hgopefully its quality
+it at this stage. But, we’re actively developing BS, so hopefully its quality
 will rapidly improve.
 
 Examples & Usage
@@ -15,7 +15,7 @@ http://mxcl.github.com/bs/
 Inline HTML Caveats
 ===================
 You have to cleanly terminate your HTML tags. This is how the parser
-determines where HTML ends. So if you start with a `<div>` end with a `</div>`.
+determines where HTML ends. So if you start with a `<div>`, end with a `</div>`.
 Though having said this, we understand tags like `<img>` too. Also you can do
 this:
 
