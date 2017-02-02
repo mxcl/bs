@@ -5,8 +5,8 @@ BullScript compiles to Javascript.
 Alpha Quality
 =============
 The test-suite no doubt has holes. So you may have to fix some bugs if you use
-it at this stage. But, we’re actively developing BS, so hopefully its quality
-will rapidly improve.
+it at this stage. Development of BS stalled due to other engagements, but when
+we stopped devleoping it, it was working well!
 
 Examples & Usage
 ================
