@@ -2,7 +2,7 @@
 
 You may be looking for the newer language by the same name here:
 
-- [Bullscript Documentation](https://github.com/phil-daniels/bullscript)
+- [Bullscript Documentation](http://bullscript.io)
 - [Bullscript GitHub](https://github.com/phil-daniels/bullscript)
 
 # BullScript [![Build Status](https://travis-ci.org/mxcl/bs.svg?branch=master)](https://travis-ci.org/mxcl/bs)
