@@ -1,6 +1,9 @@
-THIS PROJECT IS NO LONGER MAINTAINED.
+# THIS PROJECT IS NO LONGER MAINTAINED.
 
-You may be looking for the newer language by the same name here [https://github.com/phil-daniels/bullscript](https://github.com/phil-daniels/bullscript)
+You may be looking for the newer language by the same name here:
+
+- [Bullscript Documentation](https://github.com/phil-daniels/bullscript)
+- [Bullscript GitHub](https://github.com/phil-daniels/bullscript)
 
 # BullScript [![Build Status](https://travis-ci.org/mxcl/bs.svg?branch=master)](https://travis-ci.org/mxcl/bs)
 
